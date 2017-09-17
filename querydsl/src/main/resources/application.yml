@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: xieyunhai
+    password: Xiao.Xi.45
+    url: jdbc:mysql://106.14.43.178:3306/dianping?characterEncoding=utf-8&useSSL=false
+  jpa:
+    show-sql: true
+    database: mysql
