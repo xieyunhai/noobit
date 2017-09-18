@@ -1,6 +1,7 @@
 package com.example.querydsl.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,7 @@ public class DruidDataSourceConfig {
      * @return
      */
     @ConfigurationProperties(prefix = "spring.datasource.druid.read")
+    @Qualifier("readDruidDataSource")
     @Bean(name = "readDruidDataSource")
     public DataSource readDruidDataSource() {
         return new DruidDataSource();
@@ -30,6 +32,7 @@ public class DruidDataSourceConfig {
      * @return
      */
     @ConfigurationProperties(prefix = "spring.datasource.druid.write")
+    @Qualifier("writeDruidDataSource")
     @Bean(name = "writeDruidDataSource")
     @Primary
     public DataSource writeDruidDataSource() {

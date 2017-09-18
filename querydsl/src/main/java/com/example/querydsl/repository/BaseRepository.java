@@ -7,6 +7,6 @@ import javax.persistence.PersistenceContext;
 
 @NoRepositoryBean
 public class BaseRepository {
-    @PersistenceContext(unitName = "TestJPA")
+    @PersistenceContext(unitName = "readPersistenceUnit")
     protected EntityManager em;
 }

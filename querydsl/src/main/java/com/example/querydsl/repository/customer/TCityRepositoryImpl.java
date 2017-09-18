@@ -16,11 +16,20 @@ public class TCityRepositoryImpl extends BaseRepository implements TCityReposito
     @Override
     public List<Tuple> findCityAndHotel(Predicate predicate) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        JPAQuery<Tuple> jpaQuery = queryFactory.select(QTCity.tCity, QTHotel.tHotel)
-                .from(QTCity.tCity)
-                .leftJoin(QTHotel.tHotel)
-                .on(QTHotel.tHotel.city.longValue().eq(QTCity.tCity.id.longValue()));
+        QTCity tCity = QTCity.tCity;
+        QTHotel tHotel = QTHotel.tHotel;
+        JPAQuery<Tuple> jpaQuery = queryFactory.select(tCity, tHotel)
+                .from(tCity)
+                .leftJoin(tCity.tHotel, tHotel)
+                .on(tHotel.city.longValue().eq(tCity.id.longValue()));
         jpaQuery.where(predicate);
+
+
+        QPartsTable qParts = QPartsTable.partsTable;
+        QInventoryBalance qBalance = QInventoryBalance.inventoryBalance;
+
+        JPAQuery q = new JPAQuery(em);
+        q.from(qParts).leftJoin(qParts.inventoryBalance, qBalance).on(qBalance.month.eq(yourMonth).and(qBalance.year.eq(yourYear))).list(qParts);
         return jpaQuery.fetch();
     }
 

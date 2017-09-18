@@ -12,8 +12,10 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * @author admin
@@ -36,12 +38,12 @@ public class WriteDataSourceConfig {
      *
      * @return
      */
-    @Bean(name = "writeEntityManagerFactoryBean")
+    @Bean(name = "writeEntityManagerFactory")
     @Primary
-    public LocalContainerEntityManagerFactoryBean writeEntityManagerFactoryBean(EntityManagerFactoryBuilder builder) {
+    public LocalContainerEntityManagerFactoryBean writeEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(writeDruidDataSource)
-                .properties(jpaProperties.getHibernateProperties(writeDruidDataSource))
+                .properties(getVendorProperties(writeDruidDataSource))
                 .packages("com.example.querydsl.domain") //设置实体类所在位置
                 .persistenceUnit("writePersistenceUnit")
                 .build();
@@ -58,8 +60,8 @@ public class WriteDataSourceConfig {
      */
     @Bean(name = "writeEntityManagerFactory")
     @Primary
-    public EntityManagerFactory writeEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        return this.writeEntityManagerFactoryBean(builder).getObject();
+    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
+        return this.writeEntityManagerFactory(builder).getObject().createEntityManager();
     }
 
     /**
@@ -70,6 +72,10 @@ public class WriteDataSourceConfig {
     @Bean(name = "writeTransactionManager")
     @Primary
     public PlatformTransactionManager writeTransactionManager(EntityManagerFactoryBuilder builder) {
-        return new JpaTransactionManager(writeEntityManagerFactory(builder));
+        return new JpaTransactionManager(writeEntityManagerFactory(builder).getObject());
+    }
+
+    private Map<String, String> getVendorProperties(DataSource dataSource) {
+        return jpaProperties.getHibernateProperties(dataSource);
     }
 }

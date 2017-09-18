@@ -18,8 +18,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @Slf4j
@@ -29,6 +27,7 @@ public class TCityRepositoryTest {
 
     QTCity qtCity = QTCity.tCity;
     QTHotel qtHotel = QTHotel.tHotel;
+
 
     /**
      * 非动态查询建议使用Query注解
@@ -42,7 +41,7 @@ public class TCityRepositoryTest {
         PageRequest pageRequest = new PageRequest(0, 10, sort);
         //查找结果
         Page<TCity> tCityPage = tCityRepository.findAll(predicate, pageRequest);
-        log.warn("result: {}", tCityPage);
+        log.warn("result: {}", tCityPage.getTotalElements());
     }
 
     //针对返回的是Object[]提供了一个很好地解决方案

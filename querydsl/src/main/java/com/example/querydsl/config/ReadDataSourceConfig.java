@@ -11,8 +11,10 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.util.Map;
 
 /**
  * @author admin
@@ -37,11 +39,11 @@ public class ReadDataSourceConfig {
      *
      * @return
      */
-    @Bean(name = "readEntityManagerFactoryBean")
-    public LocalContainerEntityManagerFactoryBean readEntityManagerFactoryBean(EntityManagerFactoryBuilder builder) {
+    @Bean(name = "readEntityManagerFactory")
+    public LocalContainerEntityManagerFactoryBean readEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(readDruidDataSource)
-                .properties(jpaProperties.getProperties())
+                .properties(getVendorProperties(readDruidDataSource))
                 .packages("com.example.querydsl.domain") //设置实体类所在位置
                 .persistenceUnit("readPersistenceUnit")//持久化单元名称
                 .build();
@@ -52,8 +54,8 @@ public class ReadDataSourceConfig {
      * @return
      */
     @Bean(name = "readEntityManagerFactory")
-    public EntityManagerFactory readEntityManagerFactory(EntityManagerFactoryBuilder builder) {
-        return this.readEntityManagerFactoryBean(builder).getObject();
+    public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
+        return this.readEntityManagerFactory(builder).getObject().createEntityManager();
     }
 
     /**
@@ -63,6 +65,10 @@ public class ReadDataSourceConfig {
      */
     @Bean(name = "readTransactionManager")
     public PlatformTransactionManager readTransactionManager(EntityManagerFactoryBuilder builder) {
-        return new JpaTransactionManager(readEntityManagerFactory(builder));
+        return new JpaTransactionManager(readEntityManagerFactory(builder).getObject());
+    }
+
+    private Map<String, String> getVendorProperties(DataSource dataSource) {
+        return jpaProperties.getHibernateProperties(dataSource);
     }
 }
