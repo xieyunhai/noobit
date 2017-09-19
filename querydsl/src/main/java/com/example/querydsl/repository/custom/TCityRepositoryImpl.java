@@ -1,4 +1,4 @@
-package com.example.querydsl.repository.customer;
+package com.example.querydsl.repository.custom;
 
 import com.example.querydsl.domain.QTCity;
 import com.example.querydsl.domain.QTHotel;
@@ -19,27 +19,21 @@ public class TCityRepositoryImpl extends BaseRepository implements TCityReposito
         QTCity tCity = QTCity.tCity;
         QTHotel tHotel = QTHotel.tHotel;
         JPAQuery<Tuple> jpaQuery = queryFactory.select(tCity, tHotel)
-                .from(tCity)
-                .leftJoin(tCity.tHotel, tHotel)
-                .on(tHotel.city.longValue().eq(tCity.id.longValue()));
+                .from(tCity, tHotel)
+                .where(tHotel.city.longValue().eq(tCity.id.longValue()));
         jpaQuery.where(predicate);
 
-
-        QPartsTable qParts = QPartsTable.partsTable;
-        QInventoryBalance qBalance = QInventoryBalance.inventoryBalance;
-
-        JPAQuery q = new JPAQuery(em);
-        q.from(qParts).leftJoin(qParts.inventoryBalance, qBalance).on(qBalance.month.eq(yourMonth).and(qBalance.year.eq(yourYear))).list(qParts);
         return jpaQuery.fetch();
     }
 
     @Override
     public QueryResults<Tuple> findCityAndHotelPage(Predicate predicate, Pageable pageable) {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
-        JPAQuery<Tuple> jpaQuery = queryFactory.select(QTCity.tCity.id, QTHotel.tHotel)
-                .from(QTCity.tCity)
-                .leftJoin(QTHotel.tHotel)
-                .on(QTHotel.tHotel.city.longValue().eq(QTCity.tCity.id.longValue()))
+        QTCity tCity = QTCity.tCity;
+        QTHotel tHotel = QTHotel.tHotel;
+        JPAQuery<Tuple> jpaQuery = queryFactory.select(tCity.id, tHotel)
+                .from(tCity, tHotel)
+                .where(tHotel.city.longValue().eq(tCity.id.longValue()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize());
         return jpaQuery.fetchResults();

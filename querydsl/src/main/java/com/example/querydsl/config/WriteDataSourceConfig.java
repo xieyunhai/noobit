@@ -13,7 +13,6 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
 
@@ -39,7 +38,6 @@ public class WriteDataSourceConfig {
      * @return
      */
     @Bean(name = "writeEntityManagerFactory")
-    @Primary
     public LocalContainerEntityManagerFactoryBean writeEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(writeDruidDataSource)
@@ -58,8 +56,7 @@ public class WriteDataSourceConfig {
      * @param builder
      * @return
      */
-    @Bean(name = "writeEntityManagerFactory")
-    @Primary
+    @Bean(name = "writeEntityManager")
     public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
         return this.writeEntityManagerFactory(builder).getObject().createEntityManager();
     }
@@ -70,7 +67,6 @@ public class WriteDataSourceConfig {
      * @return
      */
     @Bean(name = "writeTransactionManager")
-    @Primary
     public PlatformTransactionManager writeTransactionManager(EntityManagerFactoryBuilder builder) {
         return new JpaTransactionManager(writeEntityManagerFactory(builder).getObject());
     }
