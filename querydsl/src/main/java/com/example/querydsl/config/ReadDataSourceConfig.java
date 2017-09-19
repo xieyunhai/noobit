@@ -6,13 +6,13 @@ import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Map;
 
@@ -40,6 +40,7 @@ public class ReadDataSourceConfig {
      * @return
      */
     @Bean(name = "readEntityManagerFactory")
+    @Primary
     public LocalContainerEntityManagerFactoryBean readEntityManagerFactory(EntityManagerFactoryBuilder builder) {
         return builder
                 .dataSource(readDruidDataSource)
@@ -53,7 +54,8 @@ public class ReadDataSourceConfig {
      * @param builder
      * @return
      */
-    @Bean(name = "readEntityManagerFactory")
+    @Bean(name = "readEntityManager")
+    @Primary
     public EntityManager entityManager(EntityManagerFactoryBuilder builder) {
         return this.readEntityManagerFactory(builder).getObject().createEntityManager();
     }
@@ -64,6 +66,7 @@ public class ReadDataSourceConfig {
      * @return
      */
     @Bean(name = "readTransactionManager")
+    @Primary
     public PlatformTransactionManager readTransactionManager(EntityManagerFactoryBuilder builder) {
         return new JpaTransactionManager(readEntityManagerFactory(builder).getObject());
     }

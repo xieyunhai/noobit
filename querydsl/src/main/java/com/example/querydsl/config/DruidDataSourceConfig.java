@@ -22,6 +22,7 @@ public class DruidDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.druid.read")
     @Qualifier("readDruidDataSource")
     @Bean(name = "readDruidDataSource")
+    @Primary
     public DataSource readDruidDataSource() {
         return new DruidDataSource();
     }
@@ -34,7 +35,6 @@ public class DruidDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.druid.write")
     @Qualifier("writeDruidDataSource")
     @Bean(name = "writeDruidDataSource")
-    @Primary
     public DataSource writeDruidDataSource() {
         return new DruidDataSource();
     }

@@ -1,4 +1,4 @@
-package com.example.querydsl.repository.customer;
+package com.example.querydsl.repository.custom;
 
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;

@@ -3,6 +3,7 @@ package com.example.querydsl.repository;
 import com.example.querydsl.domain.QTCity;
 import com.example.querydsl.domain.QTHotel;
 import com.example.querydsl.domain.TCity;
+import com.example.querydsl.domain.THotel;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Predicate;
@@ -34,7 +35,7 @@ public class TCityRepositoryTest {
      */
     @Test
     public void findDynamic() {
-        Predicate predicate = qtCity.id.longValue().lt(3)
+        Predicate predicate = qtCity.id.longValue().lt(10)
                 .and(qtCity.name.like("shanghai"));
         //分页排序
         Sort sort = new Sort(new Sort.Order(Sort.Direction.ASC, "id"));
@@ -52,8 +53,10 @@ public class TCityRepositoryTest {
         Predicate predicate = qtCity.name.like("shanghai");
         List<Tuple> result = tCityRepository.findCityAndHotel(predicate);
         for (Tuple row : result) {
-            System.out.println("qtCity:" + row.get(qtCity));
-            System.out.println("qtHotel:" + row.get(qtHotel));
+            TCity tCity = row.get(qtCity);
+            THotel tHotel = row.get(qtHotel);
+            log.warn("qtCity: {}", tCity);
+            log.warn("qtHotel: {}", tHotel);
             System.out.println("--------------------");
         }
         System.out.println(result);
