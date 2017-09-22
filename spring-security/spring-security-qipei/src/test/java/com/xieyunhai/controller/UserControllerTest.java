@@ -1,4 +1,4 @@
-package com.xieyunhai.web;
+package com.xieyunhai.controller;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Before;
@@ -14,7 +14,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import static org.junit.Assert.*;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 
 /**
  * @author admin
@@ -36,8 +38,9 @@ public class UserControllerTest {
 
 	@Test
 	public void whenQuerySuccess() throws Exception {
+		Date date = new Date(LocalDateTime.now().plusYears(1).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+		log.info("date: {}", date);
 		mockMvc.perform(MockMvcRequestBuilders.get("/user").contentType(MediaType.APPLICATION_JSON_UTF8))
-			.andExpect(MockMvcResultMatchers.status().isOk())
-			.andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(3));
+			.andExpect(MockMvcResultMatchers.status().is4xxClientError());
 	}
 }
