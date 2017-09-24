@@ -10,4 +10,15 @@ spring:
 # 配置默认不启用安全认证
 security:
   basic:
-    enabled: false
+    enabled: true
+server:
+  port: 8900
+
+qipei:
+  security:
+    code:
+      image:
+        length: 6
+#    browser:
+#      loginPage: /login-qipei.html
+

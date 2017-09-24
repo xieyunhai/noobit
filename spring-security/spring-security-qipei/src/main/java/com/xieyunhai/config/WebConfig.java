@@ -25,19 +25,19 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 		this.timeInterceptor = timeInterceptor;
 	}
 
-	@Bean
-	public FilterRegistrationBean timeFilter() {
-		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
-		TimeFilter timeFilter = new TimeFilter();
-		filterRegistrationBean.setFilter(timeFilter);
-
-		List<String> urls = new ArrayList<>();
-		urls.add("/*");
-
-		filterRegistrationBean.setUrlPatterns(urls);
-
-		return filterRegistrationBean;
-	}
+//	@Bean
+//	public FilterRegistrationBean timeFilter() {
+//		FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+//		TimeFilter timeFilter = new TimeFilter();
+//		filterRegistrationBean.setFilter(timeFilter);
+//
+//		List<String> urls = new ArrayList<>();
+//		urls.add("/*");
+//
+//		filterRegistrationBean.setUrlPatterns(urls);
+//
+//		return filterRegistrationBean;
+//	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {

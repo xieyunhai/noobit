@@ -20,9 +20,9 @@ public class TimeInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o)
 		throws Exception {
-		log.info("pre handle...");
-		log.info("class name: {}", ((HandlerMethod)o).getBean().getClass().getName());
-		log.info("method: {}", ((HandlerMethod)o).getMethod().getName());
+//		log.info("pre handle...");
+//		log.info("class name: {}", ((HandlerMethod)o).getBean().getClass().getName());
+//		log.info("method: {}", ((HandlerMethod)o).getMethod().getName());
 
 		httpServletRequest.setAttribute("startTime", new Date().getTime());
 		return true;
@@ -30,17 +30,17 @@ public class TimeInterceptor implements HandlerInterceptor {
 
 	@Override
 	public void postHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, ModelAndView modelAndView) throws Exception {
-		log.info("post handle...");
-		log.info("time interceptor takes: {}",
-			new Date().getTime() - (long)httpServletRequest.getAttribute("startTime"));
+//		log.info("post handle...");
+//		log.info("time interceptor takes: {}",
+//			new Date().getTime() - (long)httpServletRequest.getAttribute("startTime"));
 	}
 
 	@Override
 	public void afterCompletion(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object
 		o, Exception e) throws Exception {
-		log.info("after completion...");
-		log.info("time interceptor takes: {}",
-			new Date().getTime() - (long)httpServletRequest.getAttribute("startTime"));
+//		log.info("after completion...");
+//		log.info("time interceptor takes: {}",
+//			new Date().getTime() - (long)httpServletRequest.getAttribute("startTime"));
 
 		// note: 这里可以处理异常, 也可以不需要处理, 如果主动抛出异常, 这里会打印日志
 	}
