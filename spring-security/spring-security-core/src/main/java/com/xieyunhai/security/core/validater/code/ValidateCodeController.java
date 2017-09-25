@@ -1,5 +1,6 @@
 package com.xieyunhai.security.core.validater.code;
 
+import com.xieyunhai.security.core.properties.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +15,7 @@ public class ValidateCodeController {
 	@Autowired
 	private ValidateCodeProcessorHolder validateCodeProcessorHolder;
 
-	@GetMapping("/code/{type}")
+	@GetMapping(SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/{type}")
 	public void createCode(HttpServletRequest request, HttpServletResponse response, @PathVariable String type)
 		throws Exception {
 		validateCodeProcessorHolder.findValidateCodeProcessor(type).create(new ServletWebRequest(request, response));

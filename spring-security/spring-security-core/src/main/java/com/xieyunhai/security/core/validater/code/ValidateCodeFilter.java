@@ -2,21 +2,15 @@ package com.xieyunhai.security.core.validater.code;
 
 import com.xieyunhai.security.core.properties.SecurityConstants;
 import com.xieyunhai.security.core.properties.SecurityProperties;
-import com.xieyunhai.security.core.validater.code.image.ImageCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.social.connect.web.HttpSessionSessionStrategy;
-import org.springframework.social.connect.web.SessionStrategy;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.bind.ServletRequestBindingException;
-import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,22 +22,10 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static com.xieyunhai.security.core.validater.code.ValidateCodeProcessor.SESSION_KEY_PREFIX;
-
-@EqualsAndHashCode(callSuper = true)
-@Data
 @Component("validateCodeFilter")
 @Slf4j
+@Data
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
-    /**
-     * 验证请求 url 与配置的 url 是否匹配的工具类
-     */
-    private AntPathMatcher antPathMatcher = new AntPathMatcher();
-    /**
-     * 存放所有需要校验验证码的 url
-     */
-    private Map<String, ValidateCodeType> urlMap = new HashMap<>();
-
     /**
      * 系统中的校验码处理器
      */
@@ -59,9 +41,18 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      */
     @Autowired
     private SecurityProperties securityProperties;
+    /**
+     * 验证请求 url 与配置的 url 是否匹配的工具类
+     */
+    private AntPathMatcher antPathMatcher = new AntPathMatcher();
+    /**
+     * 存放所有需要校验验证码的 url
+     */
+    private Map<String, ValidateCodeType> urlMap = new HashMap<>();
 
     @Override
     public void afterPropertiesSet() throws ServletException {
+        // todo: 这里会存在当 key 值相同时，后面的验证会覆盖前面的验证， 导致只能通过一个验证
         urlMap.put(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM, ValidateCodeType.IMAGE);
         addUrlToMap(securityProperties.getCode().getImage().getUrl(), ValidateCodeType.IMAGE);
 

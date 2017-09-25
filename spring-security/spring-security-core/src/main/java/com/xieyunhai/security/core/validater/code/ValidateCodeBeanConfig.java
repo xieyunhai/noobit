@@ -1,7 +1,7 @@
 package com.xieyunhai.security.core.validater.code;
 
 import com.xieyunhai.security.core.properties.SecurityProperties;
-import com.xieyunhai.security.core.validater.code.image.ImageCodeGenerator;
+import com.xieyunhai.security.core.validater.code.image.ImageValidateCodeGenerator;
 import com.xieyunhai.security.core.validater.code.sms.DefaultSmsCodeSender;
 import com.xieyunhai.security.core.validater.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +20,11 @@ public class ValidateCodeBeanConfig {
 	private SecurityProperties securityProperties;
 
 	@Bean
-	@ConditionalOnMissingBean(ImageCodeGenerator.class)
-	public ValidateCodeGenerator imageCodeGenerator() {
-		ImageCodeGenerator imageCodeGenerator = new ImageCodeGenerator();
-		imageCodeGenerator.setSecurityProperties(securityProperties);
-		return imageCodeGenerator;
+	@ConditionalOnMissingBean(name = "imageValidateCodeGenerator")
+	public ValidateCodeGenerator imageValidateCodeGenerator() {
+		ImageValidateCodeGenerator imageValidateCodeGenerator = new ImageValidateCodeGenerator();
+		imageValidateCodeGenerator.setSecurityProperties(securityProperties);
+		return imageValidateCodeGenerator;
 	}
 
 	@Bean

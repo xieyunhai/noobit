@@ -31,4 +31,6 @@ public class ValidateCodeProcessorHolder {
 		}
 		return processor;
 	}
+
+	public ValidateCodeProcessorHolder() { }
 }

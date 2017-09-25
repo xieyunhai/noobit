@@ -1,8 +1,11 @@
 package com.xieyunhai.security.browser;
 
-import com.xieyunhai.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.xieyunhai.security.core.authentication.mobile.AbstractChannelSecurityConfig;
+import com.xieyunhai.security.core.authentication.mobile.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.xieyunhai.security.core.properties.SecurityConstants;
 import com.xieyunhai.security.core.properties.SecurityProperties;
 import com.xieyunhai.security.core.validater.code.ValidateCodeFilter;
+import com.xieyunhai.security.core.validater.code.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,67 +24,58 @@ import javax.sql.DataSource;
 
 
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
-	@Autowired
-	private SecurityProperties securityProperties;
-	@Autowired
-	private AuthenticationSuccessHandler qipeiAuthenticationSuccessHandler;
-	@Autowired
-	private AuthenticationFailureHandler qipeiAuthenticationFailureHandler;
-	@Autowired
-	private DataSource dataSource;
-	@Autowired
-	private UserDetailsService userDetailsService;
-	@Autowired
-	private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+    @Autowired
+    private SecurityProperties securityProperties;
+    @Autowired
+    private DataSource dataSource;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-	@Bean
-	public PersistentTokenRepository persistentTokenRepository() {
-		JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-		tokenRepository.setDataSource(dataSource);
+    @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
 //		tokenRepository.setCreateTableOnStartup(true);
-		return tokenRepository;
-	}
+        return tokenRepository;
+    }
 
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
-		validateCodeFilter.setAuthenticationFailureHandler(qipeiAuthenticationFailureHandler);
-		validateCodeFilter.setSecurityProperties(securityProperties);
-		validateCodeFilter.afterPropertiesSet();
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        applyUsernamePasswordAuthenticationConfig(http);
 
-
-
-		http
-			.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-			.formLogin()
-				.loginPage("/authentication/require")
-				.loginProcessingUrl("/authentication/form")
-				.successHandler(qipeiAuthenticationSuccessHandler)
-				.failureHandler(qipeiAuthenticationFailureHandler)
-			.and()
-			.rememberMe()
-				.tokenRepository(persistentTokenRepository())
-				.tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
-				.userDetailsService(userDetailsService)
-			.and()
-			.authorizeRequests()
-				// 防止进入跳转死循环
-				.antMatchers("/authentication/require",
-					securityProperties.getBrowser().getLoginPage(),
-					"/code/*").permitAll()
-				.anyRequest()
-				.authenticated()
-			.and()
-			// 关闭跨站防护
-			.csrf()
-				.disable()
-			.apply(smsCodeAuthenticationSecurityConfig);
-	}
+        http
+            .apply(validateCodeSecurityConfig)
+            .and()
+            .apply(smsCodeAuthenticationSecurityConfig)
+            .and()
+            .rememberMe()
+            .tokenRepository(persistentTokenRepository())
+            .tokenValiditySeconds(securityProperties.getBrowser().getRememberMeSeconds())
+            .userDetailsService(userDetailsService)
+            .and()
+            .authorizeRequests()
+            // 防止进入跳转死循环
+                .antMatchers(SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
+                securityProperties.getBrowser().getLoginPage(),
+                SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*")
+                    .permitAll()
+                .anyRequest()
+                .authenticated()
+            .and()
+            // 关闭跨站防护
+            .csrf()
+            .disable();
+    }
 }

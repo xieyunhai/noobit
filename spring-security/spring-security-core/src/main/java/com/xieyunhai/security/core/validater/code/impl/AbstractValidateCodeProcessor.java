@@ -25,14 +25,6 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
 	@Autowired
 	private Map<String, ValidateCodeGenerator> validateCodeGenerators;
 
-	private void save(ServletWebRequest request, T validateCode) {
-		sessionStrategy.setAttribute(request, SESSION_KEY_PREFIX + getProcessorType(request).toUpperCase(), validateCode);
-	}
-
-	private String getProcessorType(ServletWebRequest request) {
-		return StringUtils.substringAfter(request.getRequest().getRequestURI(), "/code/");
-	}
-
 	@Override
 	public void create(ServletWebRequest request) throws Exception {
 		T validateCode = generate(request);
@@ -47,9 +39,18 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
 	 */
 	@SuppressWarnings("unchecked")
 	private T generate(ServletWebRequest request) {
-		String type = getProcessorType(request);
-		ValidateCodeGenerator validateCodeGenerator = validateCodeGenerators.get(type + "CodeGenerator");
+
+		String type = getValidateCodeType(request).toString().toLowerCase();
+		String generatorName = type + ValidateCodeGenerator.class.getSimpleName();
+		ValidateCodeGenerator validateCodeGenerator = validateCodeGenerators.get(generatorName);
+		if (validateCodeGenerator == null) {
+			throw new ValidateCodeException("验证码生成器" + generatorName + "不存在");
+		}
 		return (T) validateCodeGenerator.generate(request);
+	}
+
+	private void save(ServletWebRequest request, T validateCode) {
+		sessionStrategy.setAttribute(request, getSessionKey(request), validateCode);
 	}
 
 	/**
@@ -102,7 +103,7 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
 	 * @return
 	 */
 	private ValidateCodeType getValidateCodeType(ServletWebRequest request) {
-		String type = StringUtils.substringBefore(getClass().getSimpleName(), "CodeProcessor");
+		String type = StringUtils.substringBefore(getClass().getSimpleName(), "ValidateCodeProcessor");
 		return ValidateCodeType.valueOf(type.toUpperCase());
 	}
 
