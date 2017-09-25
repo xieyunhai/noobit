@@ -1,15 +1,15 @@
 package com.xieyunhai.security.core.validater.code;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.awt.image.BufferedImage;
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-public class ImageCode {
+public class ImageCode extends ValidateCode {
     private BufferedImage image;
-    private String code;
-    private LocalDateTime expireTime;
 
     /**
      *
@@ -18,19 +18,16 @@ public class ImageCode {
      * @param expireIn 过期时间, 单位 s
      */
     public ImageCode(BufferedImage image, String code, int expireIn) {
+        super(code, expireIn);
         this.image = image;
-        this.code = code;
-        this.expireTime = LocalDateTime.now().plusSeconds(expireIn);
     }
 
     public ImageCode(BufferedImage image, String code, LocalDateTime expireTime) {
+        super(code, expireTime);
         this.image = image;
-        this.code = code;
-        this.expireTime = expireTime;
     }
 
-
     public boolean isExpired() {
-        return LocalDateTime.now().isAfter(expireTime);
+        return super.isExpired();
     }
 }
