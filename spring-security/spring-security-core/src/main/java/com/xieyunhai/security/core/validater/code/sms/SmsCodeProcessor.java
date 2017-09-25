@@ -14,7 +14,7 @@ import javax.imageio.ImageIO;
  * @author admin
  * @since 2017/9/25 14:21
  */
-@Component("smsCodeProcessor")
+@Component("smsValidateCodeProcessor")
 public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode> {
 	@Autowired
 	private SmsCodeSender smsCodeSender;

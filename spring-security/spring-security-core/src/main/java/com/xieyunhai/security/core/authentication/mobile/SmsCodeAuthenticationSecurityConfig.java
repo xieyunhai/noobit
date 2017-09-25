@@ -22,8 +22,6 @@ public class SmsCodeAuthenticationSecurityConfig extends SecurityConfigurerAdapt
 	HttpSecurity> {
 
 	@Autowired
-	private SecurityProperties securityProperties;
-	@Autowired
 	private AuthenticationSuccessHandler qipeiAuthenticationSuccessHandler;
 	@Autowired
 	private AuthenticationFailureHandler qipeiAuthenticationFailureHandler;

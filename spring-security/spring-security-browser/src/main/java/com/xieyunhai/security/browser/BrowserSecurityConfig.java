@@ -2,7 +2,6 @@ package com.xieyunhai.security.browser;
 
 import com.xieyunhai.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.xieyunhai.security.core.properties.SecurityProperties;
-import com.xieyunhai.security.core.validater.code.SmsCodeFilter;
 import com.xieyunhai.security.core.validater.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -57,14 +56,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 		validateCodeFilter.setSecurityProperties(securityProperties);
 		validateCodeFilter.afterPropertiesSet();
 
-		SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
-		smsCodeFilter.setAuthenticationFailureHandler(qipeiAuthenticationFailureHandler);
-		smsCodeFilter.setSecurityProperties(securityProperties);
-		smsCodeFilter.afterPropertiesSet();
 
 
 		http
-			.addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
 			.formLogin()
 				.loginPage("/authentication/require")
