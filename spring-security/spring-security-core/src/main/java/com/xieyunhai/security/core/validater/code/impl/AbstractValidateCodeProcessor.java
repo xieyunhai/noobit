@@ -26,7 +26,7 @@ public abstract class AbstractValidateCodeProcessor<T extends ValidateCode> impl
 	private Map<String, ValidateCodeGenerator> validateCodeGenerators;
 
 	private void save(ServletWebRequest request, T validateCode) {
-		sessionStrategy.setAttribute(request, SESSION_KEY_PREFIX + getProcessorType(request), validateCode);
+		sessionStrategy.setAttribute(request, SESSION_KEY_PREFIX + getProcessorType(request).toUpperCase(), validateCode);
 	}
 
 	private String getProcessorType(ServletWebRequest request) {
