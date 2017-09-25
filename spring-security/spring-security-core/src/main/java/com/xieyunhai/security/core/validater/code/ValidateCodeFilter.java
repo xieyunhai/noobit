@@ -1,6 +1,7 @@
 package com.xieyunhai.security.core.validater.code;
 
 import com.xieyunhai.security.core.properties.SecurityProperties;
+import com.xieyunhai.security.core.validater.code.image.ImageCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.lang.ArrayUtils;
@@ -21,6 +22,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
+
+import static com.xieyunhai.security.core.validater.code.ValidateCodeProcessor.SESSION_KEY_PREFIX;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -68,7 +71,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request, ValidateCodeController.SESSION_KEY);
+        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request, SESSION_KEY_PREFIX + "image");
         String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
 
         if (StringUtils.isBlank(codeInRequest)) {
@@ -80,7 +83,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         }
 
         if (codeInSession.isExpired()) {
-            sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+            sessionStrategy.removeAttribute(request, SESSION_KEY_PREFIX + "image");
             throw new ValidateCodeException("验证码已过期");
         }
 
@@ -88,6 +91,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
             throw new ValidateCodeException("验证码不匹配");
         }
 
-        sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+        sessionStrategy.removeAttribute(request, SESSION_KEY_PREFIX + "image");
     }
 }

@@ -1,8 +1,9 @@
-package com.xieyunhai.security.core.validater.code;
+package com.xieyunhai.security.core.validater.code.image;
 
 import com.xieyunhai.security.core.properties.SecurityProperties;
+import com.xieyunhai.security.core.validater.code.ValidateCodeGenerator;
+import com.xieyunhai.security.core.validater.code.image.ImageCode;
 import lombok.Data;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.ServletRequestUtils;
 import org.springframework.web.context.request.ServletWebRequest;
 

@@ -1,6 +1,7 @@
 package com.xieyunhai.security.core.validater.code;
 
 import com.xieyunhai.security.core.properties.SecurityProperties;
+import com.xieyunhai.security.core.validater.code.image.ImageCodeGenerator;
 import com.xieyunhai.security.core.validater.code.sms.DefaultSmsCodeSender;
 import com.xieyunhai.security.core.validater.code.sms.SmsCodeSender;
 import org.springframework.beans.factory.annotation.Autowired;

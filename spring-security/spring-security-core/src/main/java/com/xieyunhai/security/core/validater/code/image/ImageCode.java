@@ -1,5 +1,6 @@
-package com.xieyunhai.security.core.validater.code;
+package com.xieyunhai.security.core.validater.code.image;
 
+import com.xieyunhai.security.core.validater.code.ValidateCode;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
