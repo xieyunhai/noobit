@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Stream;
 
+@EqualsAndHashCode(callSuper = true)
 @Component("validateCodeFilter")
 @Slf4j
 @Data
@@ -98,6 +99,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      */
     private Optional<ValidateCodeType> getValidateCodeType(HttpServletRequest request) {
         Optional<String> first = Optional.empty();
+        // note: 屏蔽了 get 方法的验证
         if (!StringUtils.equalsIgnoreCase(request.getMethod(), "get")) {
             Set<String> urls = urlMap.keySet();
             first = urls.stream()
