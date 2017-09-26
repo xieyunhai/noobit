@@ -16,10 +16,15 @@ server:
 
 qipei:
   security:
+    social:
+      qq:
+        app-id: 10550231
+        app-secret:
     code:
       image:
         length: 6
         url: /user/*
 #    browser:
 #      loginPage: /login-qipei.html
+
 
